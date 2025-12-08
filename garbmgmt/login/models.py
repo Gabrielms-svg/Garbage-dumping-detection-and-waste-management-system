@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser, BaseUserManager 
 
 # Create your models here.
 
@@ -27,21 +27,28 @@ class CustomUserManager(BaseUserManager):
 
 # Custom user model
 class User(AbstractUser):
-    email = models.EmailField(unique=True)  
+    ROLE_CHOICES = (
+        ('user', 'Normal User'),
+        ('authority', 'Authority'),
+    )
+
+    email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15, null=True, blank=True)
     fullname = models.CharField(max_length=100, null=True, blank=True)
-    profile = models.ImageField(upload_to="profile/")
+    profile = models.ImageField(upload_to="profile/", null=True, blank=True)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='user')
+
     username = None
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
 
     class Meta:
-        db_table = 'user'
+        db_table = "user"
 
     def __str__(self):
         return self.fullname
 
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
 
 

@@ -43,6 +43,23 @@ def user_login(request):
     
     return render(request, 'user_login.html')
 
+def auth_login(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        user = authenticate(email=email, password=password)
+
+        if user is not None and user.role == "authority":
+            login(request, user)
+            return redirect('auth_dashboard')   # change URL name as needed
+
+        else:
+            messages.error(request, "Invalid authority credentials")
+
+    return render(request, 'auth_login.html')
+
+
 @login_required(login_url='user_login')
 def user_dashboard(request):
     return render(request,'user_dashboard.html')
@@ -53,8 +70,7 @@ def user_logout(request):
     return redirect('user_login')   # redirect to login page
 
 
-def auth_login(request):
-    return redirect('auth_login.html')
+
 
 def auth_dashboard(request):
     return render(request,'auth_dashboard.html')
