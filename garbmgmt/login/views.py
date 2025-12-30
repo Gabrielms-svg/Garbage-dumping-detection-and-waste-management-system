@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from .chatbot import get_response
 import json
 from .models import LegalDumpingLocation
+from django.views.decorators.http import require_http_methods
 
 
 def home(request):
@@ -117,7 +118,9 @@ def auth_dashboard(request):
     if 'authority_user_id' not in request.session:
         return redirect('auth_login')
     return render(request,'auth_dashboard.html')
-   
+
+
+@csrf_exempt   
 def add_legal_location(request):
     if request.method == "POST" and request.user.is_staff:
         data = json.loads(request.body)
@@ -132,3 +135,17 @@ def add_legal_location(request):
 def get_legal_locations(request):
     locations = LegalDumpingLocation.objects.filter(is_active=True)
     return JsonResponse(list(locations.values()), safe=False)
+
+@csrf_exempt
+@require_http_methods(["DELETE"])
+def delete_legal_location(request, location_id):
+    if request.user.is_staff:
+        try:
+            location = LegalDumpingLocation.objects.get(id=location_id, added_by=request.user)
+            location.delete()
+            return JsonResponse({"message": "Location deleted successfully"})
+        except LegalDumpingLocation.DoesNotExist:
+            return JsonResponse({"error": "Location not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+    return JsonResponse({"error": "Unauthorized"}, status=403)
