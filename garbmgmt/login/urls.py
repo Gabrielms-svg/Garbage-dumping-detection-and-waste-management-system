@@ -13,6 +13,7 @@ urlpatterns = [
     path('user_logout/', views.user_logout, name='user_logout'),
     path('auth_logout',views.auth_logout,name='auth_logout'),
     path('chatbot/', views.chatbot_api, name='chatbot_api'),
+    path("auth_dashboard/add-legal-location/", views.add_legal_location),
     
 
     

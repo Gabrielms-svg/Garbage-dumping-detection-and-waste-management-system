@@ -8,7 +8,8 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import *
 from django.http import JsonResponse
 from .chatbot import get_response
-
+import json
+from .models import LegalDumpingLocation
 
 
 def home(request):
@@ -117,3 +118,17 @@ def auth_dashboard(request):
         return redirect('auth_login')
     return render(request,'auth_dashboard.html')
    
+def add_legal_location(request):
+    if request.method == "POST" and request.user.is_staff:
+        data = json.loads(request.body)
+        LegalDumpingLocation.objects.create(
+            name="Legal Dumping Site",
+            latitude=data["latitude"],
+            longitude=data["longitude"],
+            added_by=request.user
+        )
+        return JsonResponse({"message": "Location saved successfully"})
+
+def get_legal_locations(request):
+    locations = LegalDumpingLocation.objects.filter(is_active=True)
+    return JsonResponse(list(locations.values()), safe=False)

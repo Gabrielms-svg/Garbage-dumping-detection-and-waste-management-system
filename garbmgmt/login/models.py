@@ -77,4 +77,12 @@ class Authority_user(models.Model):
 
 
 
+# models.py
+class LegalDumpingLocation(models.Model):
+    name = models.CharField(max_length=200)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    is_active = models.BooleanField(default=True)
+    added_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 

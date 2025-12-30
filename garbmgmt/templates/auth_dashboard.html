@@ -1,1016 +1,1639 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dump Surveillance AI - Authority Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --primary-color: #1a237e;
-            --primary-dark: #0d153a;
-            --primary-light: #534bae;
-            --secondary-color: #ff9800;
-            --secondary-dark: #ef6c00;
-            --accent-color: #d32f2f;
-            --light-bg: #f5f5f5;
-            --dark-text: #333;
-            --light-text: #666;
-            --white: #ffffff;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --border-radius: 8px;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Roboto', sans-serif;
-            color: var(--dark-text);
-            background-color: var(--light-bg);
-            line-height: 1.6;
-        }
-        
-        h1, h2, h3, h4 {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-        }
-        
-        /* Navbar Styles */
-        .navbar {
-            background-color: var(--white);
-            box-shadow: var(--shadow);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .logo-icon {
-            color: var(--primary-color);
-            font-size: 1.8rem;
-        }
-        
-        .logo h1 {
-            font-size: 1.5rem;
-            color: var(--primary-dark);
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
-        
-        .nav-links a {
-            text-decoration: none;
-            color: var(--dark-text);
-            font-weight: 500;
-            transition: color 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .nav-links a:hover {
-            color: var(--primary-color);
-        }
-        
-        .nav-links .sign-out {
-            color: var(--accent-color);
-        }
-        
-        .nav-links .sign-out:hover {
-            color: #b71c1c;
-        }
-        
-        .authority-badge {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background-color: #e8eaf6;
-            padding: 8px 15px;
-            border-radius: 20px;
-        }
-        
-        .authority-badge i {
-            color: var(--primary-color);
-        }
-        
-        /* Main Content */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        
-        .authority-welcome {
-            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
-            color: var(--white);
-            padding: 1.5rem 2rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            flex-grow: 1;
-            margin-right: 1rem;
-        }
-        
-        .authority-welcome h2 {
-            margin-bottom: 0.5rem;
-        }
-        
-        .stats-card {
-            background-color: var(--white);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 1.5rem;
-            min-width: 200px;
-            text-align: center;
-        }
-        
-        .stats-card .number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            line-height: 1;
-            margin-bottom: 0.5rem;
-        }
-        
-        .stats-card .label {
-            color: var(--light-text);
-            font-size: 0.9rem;
-        }
-        
+      :root {
+        --primary-color: #1a237e;
+        --primary-dark: #0d153a;
+        --primary-light: #534bae;
+        --secondary-color: #ff9800;
+        --secondary-dark: #ef6c00;
+        --accent-color: #d32f2f;
+        --light-bg: #f5f5f5;
+        --dark-text: #333;
+        --light-text: #666;
+        --white: #ffffff;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --border-radius: 8px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Roboto", sans-serif;
+        color: var(--dark-text);
+        background-color: var(--light-bg);
+        line-height: 1.6;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+      }
+
+      /* Navbar Styles */
+      .navbar {
+        background-color: var(--white);
+        box-shadow: var(--shadow);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo-icon {
+        color: var(--primary-color);
+        font-size: 1.8rem;
+      }
+
+      .logo h1 {
+        font-size: 1.5rem;
+        color: var(--primary-dark);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--dark-text);
+        font-weight: 500;
+        transition: color 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .nav-links a:hover {
+        color: var(--primary-color);
+      }
+
+      .nav-links .sign-out {
+        color: var(--accent-color);
+      }
+
+      .nav-links .sign-out:hover {
+        color: #b71c1c;
+      }
+
+      .authority-badge {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background-color: #e8eaf6;
+        padding: 8px 15px;
+        border-radius: 20px;
+      }
+
+      .authority-badge i {
+        color: var(--primary-color);
+      }
+
+      /* Main Content */
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .authority-welcome {
+        background: linear-gradient(
+          to right,
+          var(--primary-color),
+          var(--primary-light)
+        );
+        color: var(--white);
+        padding: 1.5rem 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        flex-grow: 1;
+        margin-right: 1rem;
+      }
+
+      .authority-welcome h2 {
+        margin-bottom: 0.5rem;
+      }
+
+      .stats-card {
+        background-color: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+        min-width: 200px;
+        text-align: center;
+      }
+
+      .stats-card .number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        line-height: 1;
+        margin-bottom: 0.5rem;
+      }
+
+      .stats-card .label {
+        color: var(--light-text);
+        font-size: 0.9rem;
+      }
+
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .card {
+        background-color: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+        transition: transform 0.3s;
+      }
+
+      .card:hover {
+        transform: translateY(-3px);
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 1px solid #eee;
+      }
+
+      .card-header h3 {
+        color: var(--primary-dark);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .card-icon {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+      }
+
+      /* Offences Table */
+      .offences-container {
+        max-height: 500px;
+        overflow-y: auto;
+      }
+
+      .offences-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .offences-table th {
+        background-color: #f5f5f5;
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        color: var(--primary-dark);
+        position: sticky;
+        top: 0;
+        border-bottom: 2px solid #ddd;
+      }
+
+      .offences-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #eee;
+      }
+
+      .offences-table tr:hover {
+        background-color: #f9f9f9;
+      }
+
+      .status-badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      .status-pending {
+        background-color: #fff3e0;
+        color: #ef6c00;
+      }
+
+      .status-investigating {
+        background-color: #e3f2fd;
+        color: #1565c0;
+      }
+
+      .status-resolved {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .btn {
+        background-color: var(--primary-color);
+        color: var(--white);
+        border: none;
+        padding: 0.6rem 1rem;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 0.9rem;
+      }
+
+      .btn:hover {
+        background-color: var(--primary-dark);
+      }
+
+      .btn-secondary {
+        background-color: var(--secondary-color);
+      }
+
+      .btn-secondary:hover {
+        background-color: var(--secondary-dark);
+      }
+
+      .btn-danger {
+        background-color: var(--accent-color);
+      }
+
+      .btn-danger:hover {
+        background-color: #b71c1c;
+      }
+
+      .btn-small {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+      }
+
+      .filters-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .filter-group select,
+      .filter-group input {
+        padding: 0.6rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: "Roboto", sans-serif;
+      }
+
+      .download-options {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #eee;
+      }
+
+      /* Live Cameras */
+      .cameras-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .camera-card {
+        border-radius: 4px;
+        overflow: hidden;
+        position: relative;
+        height: 200px;
+        background-color: #000;
+      }
+
+      .camera-feed {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .camera-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 0.8rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .camera-status {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .status-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .status-active {
+        background-color: #4caf50;
+      }
+
+      .status-inactive {
+        background-color: #f44336;
+      }
+
+      /* Map Container */
+      .map-container {
+        height: 300px;
+        background-color: #e0e0e0;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .map-placeholder {
+        text-align: center;
+        color: var(--light-text);
+      }
+
+      .map-placeholder i {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .map-controls {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      /* Recent Dumps Grid */
+      .dumps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .dump-item {
+        border-radius: 4px;
+        overflow: hidden;
+        position: relative;
+        height: 150px;
+      }
+
+      .dump-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s;
+      }
+
+      .dump-item:hover img {
+        transform: scale(1.05);
+      }
+
+      .dump-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 0.5rem;
+        font-size: 0.8rem;
+      }
+
+      /* Footer */
+      .footer {
+        text-align: center;
+        padding: 1.5rem;
+        margin-top: 2rem;
+        border-top: 1px solid #ddd;
+        color: var(--light-text);
+        font-size: 0.9rem;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 1024px) {
         .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
+          grid-template-columns: 1fr;
         }
-        
-        .card {
-            background-color: var(--white);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 1.5rem;
-            transition: transform 0.3s;
+
+        .dashboard-header {
+          flex-direction: column;
+          gap: 1rem;
         }
-        
-        .card:hover {
-            transform: translateY(-3px);
+
+        .authority-welcome {
+          margin-right: 0;
+          width: 100%;
         }
-        
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.8rem;
-            border-bottom: 1px solid #eee;
+
+        .stats-card {
+          width: 100%;
         }
-        
-        .card-header h3 {
-            color: var(--primary-dark);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+      }
+
+      @media (max-width: 768px) {
+        .navbar {
+          flex-direction: column;
+          gap: 1rem;
+          padding: 1rem;
         }
-        
-        .card-icon {
-            font-size: 1.5rem;
-            color: var(--primary-color);
+
+        .nav-links {
+          width: 100%;
+          justify-content: space-between;
         }
-        
-        /* Offences Table */
-        .offences-container {
-            max-height: 500px;
-            overflow-y: auto;
+
+        .container {
+          padding: 1rem;
         }
-        
-        .offences-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .offences-table th {
-            background-color: #f5f5f5;
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: var(--primary-dark);
-            position: sticky;
-            top: 0;
-            border-bottom: 2px solid #ddd;
-        }
-        
-        .offences-table td {
-            padding: 1rem;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .offences-table tr:hover {
-            background-color: #f9f9f9;
-        }
-        
-        .status-badge {
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-        
-        .status-pending {
-            background-color: #fff3e0;
-            color: #ef6c00;
-        }
-        
-        .status-investigating {
-            background-color: #e3f2fd;
-            color: #1565c0;
-        }
-        
-        .status-resolved {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .btn {
-            background-color: var(--primary-color);
-            color: var(--white);
-            border: none;
-            padding: 0.6rem 1rem;
-            border-radius: 4px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 0.9rem;
-        }
-        
-        .btn:hover {
-            background-color: var(--primary-dark);
-        }
-        
-        .btn-secondary {
-            background-color: var(--secondary-color);
-        }
-        
-        .btn-secondary:hover {
-            background-color: var(--secondary-dark);
-        }
-        
-        .btn-danger {
-            background-color: var(--accent-color);
-        }
-        
-        .btn-danger:hover {
-            background-color: #b71c1c;
-        }
-        
-        .btn-small {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.85rem;
-        }
-        
+
         .filters-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
+          flex-direction: column;
+          align-items: flex-start;
         }
-        
+
         .filter-group {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
+          flex-wrap: wrap;
         }
-        
-        .filter-group select, .filter-group input {
-            padding: 0.6rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: 'Roboto', sans-serif;
-        }
-        
-        .download-options {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #eee;
-        }
-        
-        /* Live Cameras */
+
         .cameras-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
+          grid-template-columns: 1fr;
         }
-        
-        .camera-card {
-            border-radius: 4px;
-            overflow: hidden;
-            position: relative;
-            height: 200px;
-            background-color: #000;
-        }
-        
-        .camera-feed {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .camera-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 0.8rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .camera-status {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .status-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        
-        .status-active {
-            background-color: #4caf50;
-        }
-        
-        .status-inactive {
-            background-color: #f44336;
-        }
-        
-        /* Map Container */
-        .map-container {
-            height: 300px;
-            background-color: #e0e0e0;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1rem;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .map-placeholder {
-            text-align: center;
-            color: var(--light-text);
-        }
-        
-        .map-placeholder i {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-        
-        .map-controls {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        /* Recent Dumps Grid */
-        .dumps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .dump-item {
-            border-radius: 4px;
-            overflow: hidden;
-            position: relative;
-            height: 150px;
-        }
-        
-        .dump-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s;
-        }
-        
-        .dump-item:hover img {
-            transform: scale(1.05);
-        }
-        
-        .dump-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 0.5rem;
-            font-size: 0.8rem;
-        }
-        
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 1.5rem;
-            margin-top: 2rem;
-            border-top: 1px solid #ddd;
-            color: var(--light-text);
-            font-size: 0.9rem;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .dashboard-header {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .authority-welcome {
-                margin-right: 0;
-                width: 100%;
-            }
-            
-            .stats-card {
-                width: 100%;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem;
-            }
-            
-            .nav-links {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .container {
-                padding: 1rem;
-            }
-            
-            .filters-bar {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .filter-group {
-                flex-wrap: wrap;
-            }
-            
-            .cameras-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        /* Django Template Tags Simulation */
-        .django-tag {
-            display: inline-block;
-            background-color: #f1f1f1;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: monospace;
-            font-size: 0.9rem;
-            margin: 0 2px;
-            color: #d32f2f;
-        }
+      }
+
+      /* Django Template Tags Simulation */
+      .django-tag {
+        display: inline-block;
+        background-color: #f1f1f1;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: monospace;
+        font-size: 0.9rem;
+        margin: 0 2px;
+        color: #d32f2f;
+      }
     </style>
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+  </head>
+  <body>
     <!-- Django Template Tag for CSRF Token -->
     <!-- {% csrf_token %} -->
-    
+
     <!-- Navigation Bar -->
     <nav class="navbar">
-        <div class="logo">
-            <i class="fas fa-shield-alt logo-icon"></i>
-            <h1>Dump Surveillance AI - Authority Portal</h1>
+      <div class="logo">
+        <i class="fas fa-shield-alt logo-icon"></i>
+        <h1>Dump Surveillance AI - Authority Portal</h1>
+      </div>
+
+      <div class="nav-links">
+        <div class="authority-badge">
+          <i class="fas fa-user-shield"></i>
+          <!-- Django Template Tag for Username -->
+          <!-- {% if user.is_authenticated %} -->
+          <span>Authority User: <strong>CityAdmin</strong></span>
+          <!-- {% endif %} -->
         </div>
-        
-        <div class="nav-links">
-            <div class="authority-badge">
-                <i class="fas fa-user-shield"></i>
-                <!-- Django Template Tag for Username -->
-                <!-- {% if user.is_authenticated %} -->
-                <span>Authority User: <strong>CityAdmin</strong></span>
-                <!-- {% endif %} -->
-            </div>
-            
-            <a href="#"><i class="fas fa-info-circle"></i> About</a>
-            <a href="{% url 'auth_logout' %}" class="sign-out"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
-        </div>
+
+        <a href="#"><i class="fas fa-info-circle"></i> About</a>
+        <a href="{% url 'auth_logout' %}" class="sign-out"
+          ><i class="fas fa-sign-out-alt"></i> Sign Out</a
+        >
+      </div>
     </nav>
 
     <!-- Main Content Container -->
     <div class="container">
-        <!-- Dashboard Header -->
-        <div class="dashboard-header">
-            <div class="authority-welcome">
-                <h2>Authority Control Dashboard</h2>
-                <p>Monitor illegal dumping activities, manage reports, and update legal dumping locations.</p>
-                <p><strong>Last updated:</strong> Today, 10:45 AM | <strong>Active cameras:</strong> 12/15</p>
-            </div>
-            
-            <div class="stats-card">
-                <div class="number">48</div>
-                <div class="label">Pending Reports</div>
-            </div>
-            
-            <div class="stats-card">
-                <div class="number">127</div>
-                <div class="label">Total This Month</div>
-            </div>
+      <!-- Dashboard Header -->
+      <div class="dashboard-header">
+        <div class="authority-welcome">
+          <h2>Authority Control Dashboard</h2>
+          <p>
+            Monitor illegal dumping activities, manage reports, and update legal
+            dumping locations.
+          </p>
+          <p>
+            <strong>Last updated:</strong> Today, 10:45 AM |
+            <strong>Active cameras:</strong> 12/15
+          </p>
         </div>
-        
-        <!-- Dashboard Grid -->
-        <div class="dashboard-grid">
-            <!-- Offences Reports Card -->
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-clipboard-list card-icon"></i> Offences Reports</h3>
-                    <span class="status-badge status-pending">12 New Today</span>
-                </div>
-                
-                <!-- Filters and Sorting -->
-                <div class="filters-bar">
-                    <div class="filter-group">
-                        <select id="sort-by">
-                            <option value="recent">Sort by: Most Recent</option>
-                            <option value="oldest">Sort by: Oldest First</option>
-                            <option value="severity">Sort by: Severity</option>
-                            <option value="location">Sort by: Location</option>
-                        </select>
-                        
-                        <input type="date" id="date-filter" value="2023-10-15">
-                        
-                        <select id="status-filter">
-                            <option value="all">All Status</option>
-                            <option value="pending">Pending</option>
-                            <option value="investigating">Investigating</option>
-                            <option value="resolved">Resolved</option>
-                        </select>
-                    </div>
-                    
-                    <button class="btn btn-secondary">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                </div>
-                
-                <!-- Offences Table -->
-                <div class="offences-container">
-                    <table class="offences-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Date & Time</th>
-                                <th>Location</th>
-                                <th>Severity</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Django Template Tag for loop -->
-                            <!-- {% for offence in offences %} -->
-                            <tr>
-                                <td>#DMP-2023-127</td>
-                                <td>2023-10-15 09:32</td>
-                                <td>Downtown, 5th Ave</td>
-                                <td>
-                                    <span class="status-badge status-pending">High</span>
-                                </td>
-                                <td>
-                                    <span class="status-badge status-investigating">Investigating</span>
-                                </td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-small" onclick="viewOffenceDetails('DMP-2023-127')">
-                                            <i class="fas fa-eye"></i> View
-                                        </button>
-                                        <button class="btn btn-secondary btn-small" onclick="downloadReport('DMP-2023-127')">
-                                            <i class="fas fa-download"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td>#DMP-2023-126</td>
-                                <td>2023-10-14 16:45</td>
-                                <td>Industrial Zone, Sector B</td>
-                                <td>
-                                    <span class="status-badge status-pending">Medium</span>
-                                </td>
-                                <td>
-                                    <span class="status-badge status-pending">Pending</span>
-                                </td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-small">
-                                            <i class="fas fa-eye"></i> View
-                                        </button>
-                                        <button class="btn btn-secondary btn-small">
-                                            <i class="fas fa-download"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td>#DMP-2023-125</td>
-                                <td>2023-10-14 11:20</td>
-                                <td>Riverside Park</td>
-                                <td>
-                                    <span class="status-badge status-pending">High</span>
-                                </td>
-                                <td>
-                                    <span class="status-badge status-resolved">Resolved</span>
-                                </td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-small">
-                                            <i class="fas fa-eye"></i> View
-                                        </button>
-                                        <button class="btn btn-secondary btn-small">
-                                            <i class="fas fa-download"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td>#DMP-2023-124</td>
-                                <td>2023-10-13 14:15</td>
-                                <td>North Residential Area</td>
-                                <td>
-                                    <span class="status-badge status-pending">Low</span>
-                                </td>
-                                <td>
-                                    <span class="status-badge status-investigating">Investigating</span>
-                                </td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-small">
-                                            <i class="fas fa-eye"></i> View
-                                        </button>
-                                        <button class="btn btn-secondary btn-small">
-                                            <i class="fas fa-download"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td>#DMP-2023-123</td>
-                                <td>2023-10-12 18:30</td>
-                                <td>South Market Street</td>
-                                <td>
-                                    <span class="status-badge status-pending">Medium</span>
-                                </td>
-                                <td>
-                                    <span class="status-badge status-resolved">Resolved</span>
-                                </td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-small">
-                                            <i class="fas fa-eye"></i> View
-                                        </button>
-                                        <button class="btn btn-secondary btn-small">
-                                            <i class="fas fa-download"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- {% endfor %} -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <!-- Download Options -->
-                <div class="download-options">
-                    <button class="btn btn-secondary" onclick="downloadDailyReport()">
-                        <i class="fas fa-calendar-day"></i> Download Today's Reports
-                    </button>
-                    <button class="btn" onclick="downloadAllReports()">
-                        <i class="fas fa-download"></i> Download All Filtered Reports
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Live Cameras Card -->
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-video card-icon"></i> Live Camera Feeds</h3>
-                    <div class="camera-status">
-                        <span class="status-indicator status-active"></span>
-                        <span>12 Active</span>
-                    </div>
-                </div>
-                
-                <p>Monitor live feeds from surveillance cameras in high-risk areas:</p>
-                
-                <div class="cameras-grid">
-                    <div class="camera-card">
-                        <div class="camera-feed" style="background-color: #555; display: flex; align-items: center; justify-content: center; color: white;">
-                            <div style="text-align: center;">
-                                <i class="fas fa-video" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
-                                <p>Live Feed</p>
-                            </div>
-                        </div>
-                        <div class="camera-info">
-                            <div>
-                                <strong>Camera #05</strong><br>
-                                <small>Downtown - 5th Ave</small>
-                            </div>
-                            <div class="status-indicator status-active"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="camera-card">
-                        <div class="camera-feed" style="background-color: #555; display: flex; align-items: center; justify-content: center; color: white;">
-                            <div style="text-align: center;">
-                                <i class="fas fa-video" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
-                                <p>Live Feed</p>
-                            </div>
-                        </div>
-                        <div class="camera-info">
-                            <div>
-                                <strong>Camera #12</strong><br>
-                                <small>Industrial Zone</small>
-                            </div>
-                            <div class="status-indicator status-active"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 1rem;">
-                    <button class="btn" style="width: 100%;">
-                        <i class="fas fa-expand"></i> View All Camera Feeds (12 Active)
-                    </button>
-                </div>
-            </div>
+
+        <div class="stats-card">
+          <div class="number">48</div>
+          <div class="label">Pending Reports</div>
         </div>
-        
-        <!-- Second Row -->
-        <div class="dashboard-grid">
-            <!-- Manage Legal Dumping Locations Card -->
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-map-marked-alt card-icon"></i> Legal Dumping Locations</h3>
-                    <button class="btn btn-small">
-                        <i class="fas fa-plus"></i> Add New
-                    </button>
-                </div>
-                
-                <p>Update legal garbage bins and recycling center locations on the map:</p>
-                
-                <div class="map-container">
-                    <div class="map-placeholder">
-                        <i class="fas fa-map"></i>
-                        <p>Interactive Map with Legal Dumping Locations</p>
-                        <p><small>Click on markers to edit or delete locations</small></p>
-                    </div>
-                </div>
-                
-                <div class="map-controls">
-                    <button class="btn">
-                        <i class="fas fa-map-pin"></i> Add New Bin Location
-                    </button>
-                    <button class="btn btn-secondary">
-                        <i class="fas fa-edit"></i> Edit Existing Locations
-                    </button>
-                    <button class="btn btn-danger">
-                        <i class="fas fa-trash-alt"></i> Remove Location
-                    </button>
-                </div>
-                
-                <div style="margin-top: 1rem; font-size: 0.9rem; color: var(--light-text);">
-                    <p><i class="fas fa-info-circle"></i> <strong>Currently active:</strong> 47 legal bin locations | 12 recycling centers</p>
-                </div>
-            </div>
-            
-            <!-- Recent Illegal Dumps Detected -->
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-camera card-icon"></i> AI-Detected Illegal Dumps</h3>
-                    <a href="#" style="text-decoration: none; color: var(--primary-color); font-size: 0.9rem;">View All</a>
-                </div>
-                
-                <p>Recent illegal dumping incidents detected by AI surveillance (last 24 hours):</p>
-                
-                <div class="dumps-grid">
-                    <!-- Django Template Tag for loop -->
-                    <!-- {% for dump in recent_dumps %} -->
-                    <div class="dump-item">
-                        <img src="https://images.unsplash.com/photo-1589652717521-10c0d092dea9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Illegal dump site">
-                        <div class="dump-info">
-                            <strong>Downtown Area</strong><br>
-                            Detected: 2 hours ago<br>
-                            <small>Confidence: 94%</small>
-                        </div>
-                    </div>
-                    
-                    <div class="dump-item">
-                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Illegal dump site">
-                        <div class="dump-info">
-                            <strong>Industrial Zone</strong><br>
-                            Detected: 5 hours ago<br>
-                            <small>Confidence: 87%</small>
-                        </div>
-                    </div>
-                    
-                    <div class="dump-item">
-                        <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Illegal dump site">
-                        <div class="dump-info">
-                            <strong>Riverside</strong><br>
-                            Detected: 8 hours ago<br>
-                            <small>Confidence: 92%</small>
-                        </div>
-                    </div>
-                    
-                    <div class="dump-item">
-                        <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Illegal dump site">
-                        <div class="dump-info">
-                            <strong>Forest Road</strong><br>
-                            Detected: 12 hours ago<br>
-                            <small>Confidence: 76%</small>
-                        </div>
-                    </div>
-                    <!-- {% endfor %} -->
-                </div>
-                
-                <div style="margin-top: 1rem;">
-                    <button class="btn" style="width: 100%;">
-                        <i class="fas fa-chart-bar"></i> View Detection Analytics
-                    </button>
-                </div>
-            </div>
+
+        <div class="stats-card">
+          <div class="number">127</div>
+          <div class="label">Total This Month</div>
         </div>
+      </div>
+
+      <!-- Dashboard Grid -->
+      <div class="dashboard-grid">
+        <!-- Offences Reports Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3>
+              <i class="fas fa-clipboard-list card-icon"></i> Offences Reports
+            </h3>
+            <span class="status-badge status-pending">12 New Today</span>
+          </div>
+
+          <!-- Filters and Sorting -->
+          <div class="filters-bar">
+            <div class="filter-group">
+              <select id="sort-by">
+                <option value="recent">Sort by: Most Recent</option>
+                <option value="oldest">Sort by: Oldest First</option>
+                <option value="severity">Sort by: Severity</option>
+                <option value="location">Sort by: Location</option>
+              </select>
+
+              <input type="date" id="date-filter" value="2023-10-15" />
+
+              <select id="status-filter">
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="investigating">Investigating</option>
+                <option value="resolved">Resolved</option>
+              </select>
+            </div>
+
+            <button class="btn btn-secondary">
+              <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+          </div>
+
+          <!-- Offences Table -->
+          <div class="offences-container">
+            <table class="offences-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Date & Time</th>
+                  <th>Location</th>
+                  <th>Severity</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Django Template Tag for loop -->
+                <!-- {% for offence in offences %} -->
+                <tr>
+                  <td>#DMP-2023-127</td>
+                  <td>2023-10-15 09:32</td>
+                  <td>Downtown, 5th Ave</td>
+                  <td>
+                    <span class="status-badge status-pending">High</span>
+                  </td>
+                  <td>
+                    <span class="status-badge status-investigating"
+                      >Investigating</span
+                    >
+                  </td>
+                  <td>
+                    <div class="action-buttons">
+                      <button
+                        class="btn btn-small"
+                        onclick="viewOffenceDetails('DMP-2023-127')"
+                      >
+                        <i class="fas fa-eye"></i> View
+                      </button>
+                      <button
+                        class="btn btn-secondary btn-small"
+                        onclick="downloadReport('DMP-2023-127')"
+                      >
+                        <i class="fas fa-download"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>#DMP-2023-126</td>
+                  <td>2023-10-14 16:45</td>
+                  <td>Industrial Zone, Sector B</td>
+                  <td>
+                    <span class="status-badge status-pending">Medium</span>
+                  </td>
+                  <td>
+                    <span class="status-badge status-pending">Pending</span>
+                  </td>
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn btn-small">
+                        <i class="fas fa-eye"></i> View
+                      </button>
+                      <button class="btn btn-secondary btn-small">
+                        <i class="fas fa-download"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>#DMP-2023-125</td>
+                  <td>2023-10-14 11:20</td>
+                  <td>Riverside Park</td>
+                  <td>
+                    <span class="status-badge status-pending">High</span>
+                  </td>
+                  <td>
+                    <span class="status-badge status-resolved">Resolved</span>
+                  </td>
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn btn-small">
+                        <i class="fas fa-eye"></i> View
+                      </button>
+                      <button class="btn btn-secondary btn-small">
+                        <i class="fas fa-download"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>#DMP-2023-124</td>
+                  <td>2023-10-13 14:15</td>
+                  <td>North Residential Area</td>
+                  <td>
+                    <span class="status-badge status-pending">Low</span>
+                  </td>
+                  <td>
+                    <span class="status-badge status-investigating"
+                      >Investigating</span
+                    >
+                  </td>
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn btn-small">
+                        <i class="fas fa-eye"></i> View
+                      </button>
+                      <button class="btn btn-secondary btn-small">
+                        <i class="fas fa-download"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>#DMP-2023-123</td>
+                  <td>2023-10-12 18:30</td>
+                  <td>South Market Street</td>
+                  <td>
+                    <span class="status-badge status-pending">Medium</span>
+                  </td>
+                  <td>
+                    <span class="status-badge status-resolved">Resolved</span>
+                  </td>
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn btn-small">
+                        <i class="fas fa-eye"></i> View
+                      </button>
+                      <button class="btn btn-secondary btn-small">
+                        <i class="fas fa-download"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <!-- {% endfor %} -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Download Options -->
+          <div class="download-options">
+            <button class="btn btn-secondary" onclick="downloadDailyReport()">
+              <i class="fas fa-calendar-day"></i> Download Today's Reports
+            </button>
+            <button class="btn" onclick="downloadAllReports()">
+              <i class="fas fa-download"></i> Download All Filtered Reports
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Cameras Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fas fa-video card-icon"></i> Live Camera Feeds</h3>
+            <div class="camera-status">
+              <span class="status-indicator status-active"></span>
+              <span>12 Active</span>
+            </div>
+          </div>
+
+          <p>
+            Monitor live feeds from surveillance cameras in high-risk areas:
+          </p>
+
+          <div class="cameras-grid">
+            <div class="camera-card">
+              <div
+                class="camera-feed"
+                style="
+                  background-color: #555;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: white;
+                "
+              >
+                <div style="text-align: center">
+                  <i
+                    class="fas fa-video"
+                    style="font-size: 2rem; margin-bottom: 0.5rem"
+                  ></i>
+                  <p>Live Feed</p>
+                </div>
+              </div>
+              <div class="camera-info">
+                <div>
+                  <strong>Camera #05</strong><br />
+                  <small>Downtown - 5th Ave</small>
+                </div>
+                <div class="status-indicator status-active"></div>
+              </div>
+            </div>
+
+            <div class="camera-card">
+              <div
+                class="camera-feed"
+                style="
+                  background-color: #555;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: white;
+                "
+              >
+                <div style="text-align: center">
+                  <i
+                    class="fas fa-video"
+                    style="font-size: 2rem; margin-bottom: 0.5rem"
+                  ></i>
+                  <p>Live Feed</p>
+                </div>
+              </div>
+              <div class="camera-info">
+                <div>
+                  <strong>Camera #12</strong><br />
+                  <small>Industrial Zone</small>
+                </div>
+                <div class="status-indicator status-active"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 1rem">
+            <button class="btn" style="width: 100%">
+              <i class="fas fa-expand"></i> View All Camera Feeds (12 Active)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Second Row -->
+      <div class="dashboard-grid">
+        <!-- Manage Legal Dumping Locations Card -->
+
+        <div class="card">
+          <div class="card-header">
+            <h3>
+              <i class="fas fa-map-marked-alt card-icon"></i> Legal Dumping
+              Locations
+            </h3>
+            <button id="toggleEditMode" class="btn btn-small">
+              <i class="fas fa-plus"></i> Add New Locations
+            </button>
+          </div>
+
+          <p id="mapInstructions">
+            Click on the map to add legal dumping locations. Click on markers to
+            edit or delete.
+          </p>
+
+          <div class="map-container" style="height: 400px">
+            <div
+              id="map"
+              style="width: 100%; height: 100%; border-radius: 4px"
+            ></div>
+          </div>
+
+          <div class="map-controls">
+            <div style="display: flex; gap: 10px; align-items: center">
+              <button id="saveLocationBtn" class="btn" disabled>
+                <i class="fas fa-save"></i> Save Location
+              </button>
+              <button id="cancelLocationBtn" class="btn btn-secondary" disabled>
+                <i class="fas fa-times"></i> Cancel
+              </button>
+              <button id="deleteLocationBtn" class="btn btn-danger" disabled>
+                <i class="fas fa-trash-alt"></i> Delete
+              </button>
+            </div>
+            <div>
+              <span
+                id="selectedCoords"
+                style="font-size: 0.9rem; color: var(--light-text)"
+              ></span>
+            </div>
+          </div>
+
+          <!-- Location Form (hidden by default) -->
+          <div
+            id="locationForm"
+            style="
+              display: none;
+              margin-top: 1rem;
+              padding: 1rem;
+              background-color: #f9f9f9;
+              border-radius: 4px;
+            "
+          >
+            <h4 style="margin-bottom: 1rem">Location Details</h4>
+            <div
+              style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem"
+            >
+              <div>
+                <label
+                  for="locationName"
+                  style="
+                    display: block;
+                    margin-bottom: 0.5rem;
+                    font-weight: 500;
+                  "
+                  >Location Name</label
+                >
+                <input
+                  type="text"
+                  id="locationName"
+                  placeholder="e.g., Downtown Recycling Center"
+                  style="
+                    width: 100%;
+                    padding: 0.6rem;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                  "
+                />
+              </div>
+              <div>
+                <label
+                  for="locationType"
+                  style="
+                    display: block;
+                    margin-bottom: 0.5rem;
+                    font-weight: 500;
+                  "
+                  >Type</label
+                >
+                <select
+                  id="locationType"
+                  style="
+                    width: 100%;
+                    padding: 0.6rem;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                  "
+                >
+                  <option value="bin">Garbage Bin</option>
+                  <option value="recycling">Recycling Center</option>
+                  <option value="transfer">Transfer Station</option>
+                  <option value="hazardous">Hazardous Waste</option>
+                </select>
+              </div>
+            </div>
+            <div style="margin-top: 1rem; display: flex; gap: 1rem">
+              <button id="confirmSaveBtn" class="btn">
+                <i class="fas fa-check"></i> Confirm Save
+              </button>
+              <button id="cancelFormBtn" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+              </button>
+            </div>
+          </div>
+
+          <div
+            style="
+              margin-top: 1rem;
+              font-size: 0.9rem;
+              color: var(--light-text);
+            "
+          >
+            <p>
+              <i class="fas fa-info-circle"></i>
+              <span id="locationCount">Loading locations...</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Recent Illegal Dumps Detected -->
+        <div class="card">
+          <div class="card-header">
+            <h3>
+              <i class="fas fa-camera card-icon"></i> AI-Detected Illegal Dumps
+            </h3>
+            <a
+              href="#"
+              style="
+                text-decoration: none;
+                color: var(--primary-color);
+                font-size: 0.9rem;
+              "
+              >View All</a
+            >
+          </div>
+
+          <p>
+            Recent illegal dumping incidents detected by AI surveillance (last
+            24 hours):
+          </p>
+
+          <div class="dumps-grid">
+            <!-- Django Template Tag for loop -->
+            <!-- {% for dump in recent_dumps %} -->
+            <div class="dump-item">
+              <img
+                src="https://images.unsplash.com/photo-1589652717521-10c0d092dea9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="Illegal dump site"
+              />
+              <div class="dump-info">
+                <strong>Downtown Area</strong><br />
+                Detected: 2 hours ago<br />
+                <small>Confidence: 94%</small>
+              </div>
+            </div>
+
+            <div class="dump-item">
+              <img
+                src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="Illegal dump site"
+              />
+              <div class="dump-info">
+                <strong>Industrial Zone</strong><br />
+                Detected: 5 hours ago<br />
+                <small>Confidence: 87%</small>
+              </div>
+            </div>
+
+            <div class="dump-item">
+              <img
+                src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="Illegal dump site"
+              />
+              <div class="dump-info">
+                <strong>Riverside</strong><br />
+                Detected: 8 hours ago<br />
+                <small>Confidence: 92%</small>
+              </div>
+            </div>
+
+            <div class="dump-item">
+              <img
+                src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60"
+                alt="Illegal dump site"
+              />
+              <div class="dump-info">
+                <strong>Forest Road</strong><br />
+                Detected: 12 hours ago<br />
+                <small>Confidence: 76%</small>
+              </div>
+            </div>
+            <!-- {% endfor %} -->
+          </div>
+
+          <div style="margin-top: 1rem">
+            <button class="btn" style="width: 100%">
+              <i class="fas fa-chart-bar"></i> View Detection Analytics
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-    
+
     <!-- Footer -->
     <footer class="footer">
-        <p>Dump Surveillance AI - Authority Portal &copy; 2023. Restricted access for authorized personnel only.</p>
-        <p>All activities are logged for security and compliance purposes.</p>
+      <p>
+        Dump Surveillance AI - Authority Portal &copy; 2023. Restricted access
+        for authorized personnel only.
+      </p>
+      <p>All activities are logged for security and compliance purposes.</p>
     </footer>
 
     <script>
-        // JavaScript for interactive elements
-        
-        // Sort offences table
-        const sortSelect = document.getElementById('sort-by');
-        const dateFilter = document.getElementById('date-filter');
-        const statusFilter = document.getElementById('status-filter');
-        
-        sortSelect.addEventListener('change', function() {
-            console.log('Sorting by:', this.value);
-            // In a real app, this would trigger an API call or page refresh
-            // with the new sorting parameter
+      // JavaScript for interactive elements
+
+      // Sort offences table
+      const sortSelect = document.getElementById("sort-by");
+      const dateFilter = document.getElementById("date-filter");
+      const statusFilter = document.getElementById("status-filter");
+
+      sortSelect.addEventListener("change", function () {
+        console.log("Sorting by:", this.value);
+        // In a real app, this would trigger an API call or page refresh
+        // with the new sorting parameter
+      });
+
+      dateFilter.addEventListener("change", function () {
+        console.log("Filtering by date:", this.value);
+        // In a real app, this would filter the offences table
+      });
+
+      statusFilter.addEventListener("change", function () {
+        console.log("Filtering by status:", this.value);
+        // In a real app, this would filter the offences table
+      });
+
+      // Download functions
+      function downloadReport(reportId) {
+        alert(`Downloading report ${reportId}...`);
+        // In a real app, this would trigger a file download
+        // Example: window.location.href = `/download-report/${reportId}/`;
+      }
+
+      function downloadDailyReport() {
+        const today = new Date().toISOString().split("T")[0];
+        alert(`Downloading all reports for ${today}...`);
+        // In a real app, this would trigger a bulk download
+        // Example: window.location.href = `/download-daily-reports/?date=${today}`;
+      }
+
+      function downloadAllReports() {
+        const sortBy = sortSelect.value;
+        const date = dateFilter.value;
+        const status = statusFilter.value;
+
+        alert(
+          `Downloading all filtered reports (Sort: ${sortBy}, Date: ${date}, Status: ${status})...`
+        );
+        // In a real app, this would trigger a bulk download with filters
+      }
+
+      function viewOffenceDetails(offenceId) {
+        alert(`Viewing details for offence ${offenceId}`);
+        // In a real app, this would open a modal or redirect to a detail page
+        // Example: window.location.href = `/offence/${offenceId}/`;
+      }
+
+      // Toggle camera status
+      const cameraCards = document.querySelectorAll(".camera-card");
+      cameraCards.forEach((card) => {
+        card.addEventListener("click", function (e) {
+          if (!e.target.closest(".camera-info")) {
+            const statusIndicator = this.querySelector(".status-indicator");
+            const isActive =
+              statusIndicator.classList.contains("status-active");
+
+            if (isActive) {
+              statusIndicator.classList.remove("status-active");
+              statusIndicator.classList.add("status-inactive");
+              this.querySelector(".camera-info strong").innerHTML +=
+                " (OFFLINE)";
+            } else {
+              statusIndicator.classList.remove("status-inactive");
+              statusIndicator.classList.add("status-active");
+              const strongText = this.querySelector(
+                ".camera-info strong"
+              ).textContent;
+              this.querySelector(".camera-info strong").textContent =
+                strongText.replace(" (OFFLINE)", "");
+            }
+          }
         });
-        
-        dateFilter.addEventListener('change', function() {
-            console.log('Filtering by date:', this.value);
-            // In a real app, this would filter the offences table
+      });
+      // Map Variables
+      let map;
+      let editMode = false;
+      let markers = [];
+      let selectedMarker = null;
+      let tempMarker = null;
+      let currentLatLng = null;
+
+      // Initialize the map when DOM is loaded
+      document.addEventListener("DOMContentLoaded", function () {
+        initMap();
+        loadLegalLocations();
+        setupEventListeners();
+      });
+
+      function initMap() {
+        // Initialize map with default coordinates (center on a city)
+        map = L.map("map").setView([40.7128, -74.006], 13); // Default: New York City
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "© OpenStreetMap contributors",
+          maxZoom: 19,
+        }).addTo(map);
+
+        // Add click event to map
+        map.on("click", function (e) {
+          if (editMode) {
+            handleMapClick(e);
+          }
         });
-        
-        statusFilter.addEventListener('change', function() {
-            console.log('Filtering by status:', this.value);
-            // In a real app, this would filter the offences table
+      }
+
+      function setupEventListeners() {
+        // Toggle edit mode
+        document
+          .getElementById("toggleEditMode")
+          .addEventListener("click", function () {
+            editMode = !editMode;
+            if (editMode) {
+              this.innerHTML = '<i class="fas fa-times"></i> Exit Edit Mode';
+              this.classList.add("btn-danger");
+              document.getElementById("mapInstructions").innerHTML =
+                "Click on the map to add a new legal dumping location.";
+              document.getElementById("mapInstructions").style.color =
+                "var(--secondary-dark)";
+              document.getElementById("mapInstructions").style.fontWeight =
+                "bold";
+            } else {
+              this.innerHTML = '<i class="fas fa-plus"></i> Add New Locations';
+              this.classList.remove("btn-danger");
+              document.getElementById("mapInstructions").innerHTML =
+                "Click on markers to edit or delete. Switch to edit mode to add new locations.";
+              document.getElementById("mapInstructions").style.color = "";
+              document.getElementById("mapInstructions").style.fontWeight =
+                "normal";
+              clearSelection();
+            }
+          });
+
+        // Save location button
+        document
+          .getElementById("saveLocationBtn")
+          .addEventListener("click", function () {
+            if (currentLatLng) {
+              showLocationForm();
+            }
+          });
+
+        // Cancel location button
+        document
+          .getElementById("cancelLocationBtn")
+          .addEventListener("click", function () {
+            clearSelection();
+          });
+
+        // Delete location button
+        document
+          .getElementById("deleteLocationBtn")
+          .addEventListener("click", function () {
+            if (selectedMarker && selectedMarker.locationId) {
+              if (confirm("Are you sure you want to delete this location?")) {
+                deleteLocation(selectedMarker.locationId);
+              }
+            }
+          });
+
+        // Confirm save from form
+        document
+          .getElementById("confirmSaveBtn")
+          .addEventListener("click", function () {
+            saveLocation();
+          });
+
+        // Cancel form
+        document
+          .getElementById("cancelFormBtn")
+          .addEventListener("click", function () {
+            hideLocationForm();
+            clearSelection();
+          });
+      }
+
+      function handleMapClick(e) {
+        // Clear previous temp marker
+        if (tempMarker) {
+          map.removeLayer(tempMarker);
+        }
+
+        // Add new temporary marker
+        tempMarker = L.marker(e.latlng, {
+          draggable: true,
+          icon: L.icon({
+            iconUrl:
+              "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+            shadowUrl:
+              "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+          }),
+        }).addTo(map);
+
+        // Update coordinates display
+        currentLatLng = e.latlng;
+        document.getElementById(
+          "selectedCoords"
+        ).innerHTML = `Selected: Lat ${e.latlng.lat.toFixed(
+          6
+        )}, Lng ${e.latlng.lng.toFixed(6)}`;
+
+        // Enable save button
+        document.getElementById("saveLocationBtn").disabled = false;
+        document.getElementById("cancelLocationBtn").disabled = false;
+
+        // Make marker draggable
+        tempMarker.on("dragend", function (event) {
+          const marker = event.target;
+          const position = marker.getLatLng();
+          currentLatLng = position;
+          document.getElementById(
+            "selectedCoords"
+          ).innerHTML = `Selected: Lat ${position.lat.toFixed(
+            6
+          )}, Lng ${position.lng.toFixed(6)}`;
         });
-        
-        // Download functions
-        function downloadReport(reportId) {
-            alert(`Downloading report ${reportId}...`);
-            // In a real app, this would trigger a file download
-            // Example: window.location.href = `/download-report/${reportId}/`;
+      }
+
+      function showLocationForm() {
+        document.getElementById("locationForm").style.display = "block";
+        document.getElementById("saveLocationBtn").disabled = true;
+        document.getElementById("cancelLocationBtn").disabled = true;
+      }
+
+      function hideLocationForm() {
+        document.getElementById("locationForm").style.display = "none";
+        document.getElementById("locationName").value = "";
+        document.getElementById("locationType").value = "bin";
+      }
+
+      function clearSelection() {
+        // Remove temp marker
+        if (tempMarker) {
+          map.removeLayer(tempMarker);
+          tempMarker = null;
         }
-        
-        function downloadDailyReport() {
-            const today = new Date().toISOString().split('T')[0];
-            alert(`Downloading all reports for ${today}...`);
-            // In a real app, this would trigger a bulk download
-            // Example: window.location.href = `/download-daily-reports/?date=${today}`;
-        }
-        
-        function downloadAllReports() {
-            const sortBy = sortSelect.value;
-            const date = dateFilter.value;
-            const status = statusFilter.value;
-            
-            alert(`Downloading all filtered reports (Sort: ${sortBy}, Date: ${date}, Status: ${status})...`);
-            // In a real app, this would trigger a bulk download with filters
-        }
-        
-        function viewOffenceDetails(offenceId) {
-            alert(`Viewing details for offence ${offenceId}`);
-            // In a real app, this would open a modal or redirect to a detail page
-            // Example: window.location.href = `/offence/${offenceId}/`;
-        }
-        
-        // Toggle camera status
-        const cameraCards = document.querySelectorAll('.camera-card');
-        cameraCards.forEach(card => {
-            card.addEventListener('click', function(e) {
-                if (!e.target.closest('.camera-info')) {
-                    const statusIndicator = this.querySelector('.status-indicator');
-                    const isActive = statusIndicator.classList.contains('status-active');
-                    
-                    if (isActive) {
-                        statusIndicator.classList.remove('status-active');
-                        statusIndicator.classList.add('status-inactive');
-                        this.querySelector('.camera-info strong').innerHTML += ' (OFFLINE)';
-                    } else {
-                        statusIndicator.classList.remove('status-inactive');
-                        statusIndicator.classList.add('status-active');
-                        const strongText = this.querySelector('.camera-info strong').textContent;
-                        this.querySelector('.camera-info strong').textContent = strongText.replace(' (OFFLINE)', '');
-                    }
-                }
+
+        // Clear selection
+        currentLatLng = null;
+        selectedMarker = null;
+
+        // Reset UI
+        document.getElementById("selectedCoords").innerHTML = "";
+        document.getElementById("saveLocationBtn").disabled = true;
+        document.getElementById("cancelLocationBtn").disabled = true;
+        document.getElementById("deleteLocationBtn").disabled = true;
+        hideLocationForm();
+
+        // Reset markers to default style
+        markers.forEach((marker) => {
+          marker.setIcon(
+            L.icon({
+              iconUrl:
+                "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+              shadowUrl:
+                "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+            })
+          );
+        });
+      }
+
+      async function loadLegalLocations() {
+        try {
+          const response = await fetch("/get_legal_locations/");
+          const locations = await response.json();
+
+          // Clear existing markers
+          markers.forEach((marker) => map.removeLayer(marker));
+          markers = [];
+
+          // Add markers for each location
+          locations.forEach((location) => {
+            const marker = L.marker([location.latitude, location.longitude], {
+              icon: getMarkerIcon(location.location_type || "bin"),
+            }).addTo(map);
+
+            // Store location ID
+            marker.locationId = location.id;
+            marker.locationData = location;
+
+            // Add click event
+            marker.on("click", function () {
+              selectMarker(marker);
             });
-        });
-        
-        // Simulate live camera updates
-        function simulateCameraUpdates() {
-            // Randomly toggle a camera status every 30 seconds
-            setTimeout(() => {
-                const randomIndex = Math.floor(Math.random() * cameraCards.length);
-                const randomCard = cameraCards[randomIndex];
-                const statusIndicator = randomCard.querySelector('.status-indicator');
-                const isActive = statusIndicator.classList.contains('status-active');
-                
-                if (isActive) {
-                    statusIndicator.classList.remove('status-active');
-                    statusIndicator.classList.add('status-inactive');
-                    randomCard.querySelector('.camera-info strong').innerHTML += ' (OFFLINE)';
-                } else {
-                    statusIndicator.classList.remove('status-inactive');
-                    statusIndicator.classList.add('status-active');
-                    const strongText = randomCard.querySelector('.camera-info strong').textContent;
-                    randomCard.querySelector('.camera-info strong').textContent = strongText.replace(' (OFFLINE)', '');
-                }
-                
-                simulateCameraUpdates();
-            }, 30000);
+
+            // Add popup
+            marker.bindPopup(`
+                <strong>${location.name}</strong><br>
+                Type: ${getLocationTypeText(
+                  location.location_type || "bin"
+                )}<br>
+                Added: ${new Date(location.created_at).toLocaleDateString()}<br>
+                <button onclick="editLocation(${
+                  location.id
+                })" style="margin-top: 5px; padding: 3px 8px; background: var(--primary-color); color: white; border: none; border-radius: 3px; cursor: pointer;">
+                    Edit
+                </button>
+            `);
+
+            markers.push(marker);
+          });
+
+          // Update location count
+          document.getElementById(
+            "locationCount"
+          ).innerHTML = `<strong>Currently active:</strong> ${locations.length} legal dumping locations`;
+        } catch (error) {
+          console.error("Error loading locations:", error);
+          document.getElementById("locationCount").innerHTML =
+            "Error loading locations. Please refresh the page.";
         }
-        
-        // Start camera updates simulation
-        simulateCameraUpdates();
-        
-        // Map interaction simulation
-        const mapContainer = document.querySelector('.map-container');
-        mapContainer.addEventListener('click', function() {
-            alert('In a real application, this would open an interactive map where you can add, edit, or remove legal dumping locations.');
+      }
+
+      function getMarkerIcon(type) {
+        // Custom icons based on location type
+        const iconUrl =
+          {
+            bin: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+            recycling:
+              "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
+            transfer:
+              "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
+            hazardous:
+              "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+          }[type] ||
+          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png";
+
+        return L.icon({
+          iconUrl: iconUrl,
+          shadowUrl:
+            "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
         });
+      }
+
+      function getLocationTypeText(type) {
+        const types = {
+          bin: "Garbage Bin",
+          recycling: "Recycling Center",
+          transfer: "Transfer Station",
+          hazardous: "Hazardous Waste",
+        };
+        return types[type] || "Unknown";
+      }
+
+      function selectMarker(marker) {
+        // Clear previous selection
+        clearSelection();
+
+        // Set as selected marker
+        selectedMarker = marker;
+
+        // Highlight the marker
+        marker.setIcon(
+          L.icon({
+            iconUrl:
+              "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+            shadowUrl:
+              "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+          })
+        );
+
+        // Show coordinates
+        const latLng = marker.getLatLng();
+        document.getElementById("selectedCoords").innerHTML = `Selected: ${
+          marker.locationData.name
+        } (Lat ${latLng.lat.toFixed(6)}, Lng ${latLng.lng.toFixed(6)})`;
+
+        // Enable delete button
+        document.getElementById("deleteLocationBtn").disabled = false;
+        document.getElementById("cancelLocationBtn").disabled = false;
+
+        // Open popup
+        marker.openPopup();
+      }
+
+      async function saveLocation() {
+        const name = document.getElementById("locationName").value.trim();
+        const type = document.getElementById("locationType").value;
+
+        if (!name) {
+          alert("Please enter a location name");
+          return;
+        }
+
+        if (!currentLatLng) {
+          alert("No location selected");
+          return;
+        }
+
+        try {
+          const csrfToken = getCSRFToken();
+          const response = await fetch("/add_legal_location/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrfToken,
+            },
+            body: JSON.stringify({
+              name: name,
+              location_type: type,
+              latitude: currentLatLng.lat,
+              longitude: currentLatLng.lng,
+            }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            alert("Location saved successfully!");
+            hideLocationForm();
+            clearSelection();
+            loadLegalLocations(); // Refresh markers
+          } else {
+            alert(
+              "Error saving location: " + (result.message || "Unknown error")
+            );
+          }
+        } catch (error) {
+          console.error("Error saving location:", error);
+          alert("Error saving location. Please try again.");
+        }
+      }
+
+      async function deleteLocation(locationId) {
+        try {
+          const csrfToken = getCSRFToken();
+          const response = await fetch(
+            `/delete_legal_location/${locationId}/`,
+            {
+              method: "DELETE",
+              headers: {
+                "X-CSRFToken": csrfToken,
+              },
+            }
+          );
+
+          if (response.ok) {
+            alert("Location deleted successfully!");
+            clearSelection();
+            loadLegalLocations(); // Refresh markers
+          } else {
+            alert("Error deleting location");
+          }
+        } catch (error) {
+          console.error("Error deleting location:", error);
+          alert("Error deleting location. Please try again.");
+        }
+      }
+
+      function editLocation(locationId) {
+        // Find and select the marker
+        const marker = markers.find((m) => m.locationId === locationId);
+        if (marker) {
+          selectMarker(marker);
+          // You can implement edit functionality here
+          // For example, open a modal with the location details
+          alert(
+            `Edit location: ${marker.locationData.name}\n\nEdit functionality would open here.`
+          );
+        }
+      }
+
+      function getCSRFToken() {
+        // Get CSRF token from cookie or meta tag
+        let csrfToken = null;
+        const cookieValue = document.cookie.match(
+          "(^|;)\\s*csrftoken\\s*=\\s*([^;]+)"
+        );
+        if (cookieValue) {
+          csrfToken = cookieValue.pop();
+        } else {
+          const metaTag = document.querySelector('meta[name="csrf-token"]');
+          if (metaTag) {
+            csrfToken = metaTag.getAttribute("content");
+          }
+        }
+        return csrfToken;
+      }
+
+      // Add to your existing simulateCameraUpdates function if needed
+      // You can keep your existing JavaScript functions
+      // Simulate live camera updates
+      function simulateCameraUpdates() {
+        // Randomly toggle a camera status every 30 seconds
+        setTimeout(() => {
+          const randomIndex = Math.floor(Math.random() * cameraCards.length);
+          const randomCard = cameraCards[randomIndex];
+          const statusIndicator = randomCard.querySelector(".status-indicator");
+          const isActive = statusIndicator.classList.contains("status-active");
+
+          if (isActive) {
+            statusIndicator.classList.remove("status-active");
+            statusIndicator.classList.add("status-inactive");
+            randomCard.querySelector(".camera-info strong").innerHTML +=
+              " (OFFLINE)";
+          } else {
+            statusIndicator.classList.remove("status-inactive");
+            statusIndicator.classList.add("status-active");
+            const strongText = randomCard.querySelector(
+              ".camera-info strong"
+            ).textContent;
+            randomCard.querySelector(".camera-info strong").textContent =
+              strongText.replace(" (OFFLINE)", "");
+          }
+
+          simulateCameraUpdates();
+        }, 30000);
+      }
+
+      // Start camera updates simulation
+      simulateCameraUpdates();
+
+      // Map interaction simulation
+      const mapContainer = document.querySelector(".map-container");
+      mapContainer.addEventListener("click", function () {
+        alert(
+          "In a real application, this would open an interactive map where you can add, edit, or remove legal dumping locations."
+        );
+      });
     </script>
-</body>
+  </body>
 </html>
