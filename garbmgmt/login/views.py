@@ -164,15 +164,23 @@ def get_locations(request):
     return JsonResponse(data, safe=False)
 
 
-@require_http_methods(["DELETE"])
-def delete_legal_location(request, location_id):
-    if request.user.is_staff:
-        try:
-            location = LegalDumpingLocation.objects.get(id=location_id, added_by=request.user)
-            location.delete()
-            return JsonResponse({"message": "Location deleted successfully"})
-        except LegalDumpingLocation.DoesNotExist:
-            return JsonResponse({"error": "Location not found"}, status=404)
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
-    return JsonResponse({"error": "Unauthorized"}, status=403)
+@csrf_exempt
+def delete_location(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        location_id = data.get("id")
+
+        authority_id = request.session.get("authority_user_id")
+        if not authority_id:
+            return JsonResponse({"status": "unauthorized"}, status=403)
+
+        location = get_object_or_404(
+            LegalDumpingLocation,
+            id=location_id,
+            added_by_id=authority_id  # 🔐 authority ownership check
+        )
+
+        location.delete()  # 🔥 HARD DELETE
+        return JsonResponse({"status": "success"})
+
+    return JsonResponse({"status": "invalid"}, status=400)

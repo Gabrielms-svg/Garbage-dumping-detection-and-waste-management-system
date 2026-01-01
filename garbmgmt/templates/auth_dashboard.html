@@ -1102,7 +1102,10 @@
     <script>
       let map = L.map("map").setView([10.8505, 76.2711], 7); // Kerala default
       let selectedMarker = null;
+      let markers = [];
+      let tempMarker = null;
       let selectedLatLng = null;
+      let editMode = false;
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "&copy; OpenStreetMap contributors",
@@ -1134,9 +1137,20 @@
           document.getElementById("locationForm").style.display = "block";
         });
     </script>
-
     <script>
-      let markers = []; // store markers to manage later
+      document
+        .getElementById("deleteLocationBtn")
+        .addEventListener("click", () => {
+          if (!selectedMarker || !selectedMarker.locationId) {
+            alert("Please select a location marker first");
+            return;
+          }
+
+          deleteLocation(selectedMarker.locationId);
+        });
+    </script>
+    <script>
+       // store markers to manage later
 
       function loadLocations() {
         fetch("/get-locations/")
@@ -1223,6 +1237,47 @@
         return cookieValue;
       }
     </script>
+    <script>
+      document
+        .getElementById("deleteLocationBtn")
+        .addEventListener("click", () => {
+          if (!selectedMarker || !selectedMarker.locationId) {
+            alert("Please select a location marker to delete");
+            return;
+          }
+
+          if (!confirm("Are you sure you want to delete this location?")) {
+            return;
+          }
+
+          fetch("/delete-location/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCookie("csrftoken"),
+            },
+            body: JSON.stringify({
+              id: selectedMarker.locationId,
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.status === "success") {
+                alert("Location deleted successfully!");
+
+                // remove marker from map
+                map.removeLayer(selectedMarker);
+                selectedMarker = null;
+
+                // disable delete button again
+                document.getElementById("deleteLocationBtn").disabled = true;
+              } else {
+                alert("Failed to delete location");
+              }
+            })
+            .catch((err) => console.error(err));
+        });
+    </script>
 
     <script>
       // JavaScript for interactive elements
@@ -1305,13 +1360,8 @@
           }
         });
       });
-      // Map Variables
-      let map;
-      let editMode = false;
-      let markers = [];
-      let selectedMarker = null;
-      let tempMarker = null;
-      let currentLatLng = null;
+      
+     
 
       // Initialize the map when DOM is loaded
       document.addEventListener("DOMContentLoaded", function () {
@@ -1320,23 +1370,7 @@
         setupEventListeners();
       });
 
-      function initMap() {
-        // Initialize map with default coordinates (center on a city)
-        map = L.map("map").setView([40.7128, -74.006], 13); // Default: New York City
 
-        // Add OpenStreetMap tile layer
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          attribution: "© OpenStreetMap contributors",
-          maxZoom: 19,
-        }).addTo(map);
-
-        // Add click event to map
-        map.on("click", function (e) {
-          if (editMode) {
-            handleMapClick(e);
-          }
-        });
-      }
 
       function setupEventListeners() {
         // Toggle edit mode
@@ -1399,14 +1433,7 @@
             saveLocation();
           });
 
-        // Cancel form
-        document
-          .getElementById("cancelFormBtn")
-          .addEventListener("click", function () {
-            hideLocationForm();
-            clearSelection();
-          });
-      }
+
 
       function handleMapClick(e) {
         // Clear previous temp marker
@@ -1497,57 +1524,12 @@
         });
       }
 
-      async function loadLegalLocations() {
-        try {
-          const response = await fetch("/get_legal_locations/");
-          const locations = await response.json();
 
-          // Clear existing markers
-          markers.forEach((marker) => map.removeLayer(marker));
-          markers = [];
 
-          // Add markers for each location
-          locations.forEach((location) => {
-            const marker = L.marker([location.latitude, location.longitude], {
-              icon: getMarkerIcon(location.location_type || "bin"),
-            }).addTo(map);
 
-            // Store location ID
-            marker.locationId = location.id;
-            marker.locationData = location;
 
-            // Add click event
-            marker.on("click", function () {
-              selectMarker(marker);
-            });
 
-            // Add popup
-            marker.bindPopup(`
-                <strong>${location.name}</strong><br>
-                Type: ${getLocationTypeText(
-                  location.location_type || "bin"
-                )}<br>
-                Added: ${new Date(location.created_at).toLocaleDateString()}<br>
-                <button onclick="editLocation(${
-                  location.id
-                })" style="margin-top: 5px; padding: 3px 8px; background: var(--primary-color); color: white; border: none; border-radius: 3px; cursor: pointer;">
-                    Edit
-                </button>
-            `);
 
-            markers.push(marker);
-          });
-
-          // Update location count
-          document.getElementById(
-            "locationCount"
-          ).innerHTML = `<strong>Currently active:</strong> ${locations.length} legal dumping locations`;
-        } catch (error) {
-          console.error("Error loading locations:", error);
-          document.getElementById("locationCount").innerHTML =
-            "Error loading locations. Please refresh the page.";
-        }
-      }
 
       function getMarkerIcon(type) {
         // Custom icons based on location type
@@ -1615,92 +1597,11 @@
         marker.openPopup();
       }
 
-      async function saveLocation() {
-        const name = document.getElementById("locationName").value.trim();
-        const type = document.getElementById("locationType").value;
+     
 
-        if (!name) {
-          alert("Please enter a location name");
-          return;
-        }
+       
 
-        if (!currentLatLng) {
-          alert("No location selected");
-          return;
-        }
-
-        try {
-          const csrfToken = getCSRFToken();
-          const response = await fetch("/add_legal_location/", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRFToken": csrfToken,
-            },
-            body: JSON.stringify({
-              name: name,
-              location_type: type,
-              latitude: currentLatLng.lat,
-              longitude: currentLatLng.lng,
-            }),
-          });
-
-          const result = await response.json();
-
-          if (response.ok) {
-            alert("Location saved successfully!");
-            hideLocationForm();
-            clearSelection();
-            loadLegalLocations(); // Refresh markers
-          } else {
-            alert(
-              "Error saving location: " + (result.message || "Unknown error")
-            );
-          }
-        } catch (error) {
-          console.error("Error saving location:", error);
-          alert("Error saving location. Please try again.");
-        }
-      }
-
-      async function deleteLocation(locationId) {
-        try {
-          const csrfToken = getCSRFToken();
-          const response = await fetch(
-            `/delete_legal_location/${locationId}/`,
-            {
-              method: "DELETE",
-              headers: {
-                "X-CSRFToken": csrfToken,
-              },
-            }
-          );
-
-          if (response.ok) {
-            alert("Location deleted successfully!");
-            clearSelection();
-            loadLegalLocations(); // Refresh markers
-          } else {
-            alert("Error deleting location");
-          }
-        } catch (error) {
-          console.error("Error deleting location:", error);
-          alert("Error deleting location. Please try again.");
-        }
-      }
-
-      function editLocation(locationId) {
-        // Find and select the marker
-        const marker = markers.find((m) => m.locationId === locationId);
-        if (marker) {
-          selectMarker(marker);
-          // You can implement edit functionality here
-          // For example, open a modal with the location details
-          alert(
-            `Edit location: ${marker.locationData.name}\n\nEdit functionality would open here.`
-          );
-        }
-      }
+      
 
       function getCSRFToken() {
         // Get CSRF token from cookie or meta tag
@@ -1754,11 +1655,6 @@
 
       // Map interaction simulation
       const mapContainer = document.querySelector(".map-container");
-      mapContainer.addEventListener("click", function () {
-        alert(
-          "In a real application, this would open an interactive map where you can add, edit, or remove legal dumping locations."
-        );
-      });
     </script>
   </body>
 </html>

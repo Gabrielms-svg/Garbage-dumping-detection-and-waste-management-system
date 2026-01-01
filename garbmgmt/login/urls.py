@@ -15,6 +15,8 @@ urlpatterns = [
     path('chatbot/', views.chatbot_api, name='chatbot_api'),
     path("save-location/", views.save_location, name="save_location"),
     path("get-locations/", views.get_locations, name="get_locations"),
+    path("delete-location/", views.delete_location, name="delete_location"),
+
 
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
