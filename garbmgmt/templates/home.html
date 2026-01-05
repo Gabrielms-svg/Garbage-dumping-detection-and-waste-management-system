@@ -54,81 +54,48 @@
         </div>
     </section>
 
-    <!-- Recent Offenses (STATIC ONLY) -->
-    <section class="container">
-        <div class="section-title">
-            <h2>Recent Illegal Dumps</h2>
-            <p>Latest reported illegal dumping activities.</p>
+    <!-- Recent Offenses -->
+<section class="container">
+    <div class="section-title">
+        <h2>Recent Illegal Dumps</h2>
+        <p>Latest reported illegal dumping activities.</p>
+    </div>
+
+    <div class="offenses-grid" id="recent-offenses">
+        {% for event in events %}
+<div class="offense-card">
+    {% if event.dumping_video %}
+    <video controls class="offense-img" width="400">
+        <source src="{{ event.dumping_video.url }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    {% endif %}
+    <div class="offense-details">
+        <div class="offense-meta">
+            <div class="offense-date">{{ event.timestamp|date:"M d, Y" }}</div>
+            <div class="offense-time">{{ event.timestamp|time:"H:i A" }}</div>
         </div>
-
-        <div class="offenses-grid" id="recent-offenses">
-
-            <!-- Offense 1 -->
-            <div class="offense-card">
-                <img src=""
-                     alt="Illegal dump site" class="offense-img">
-                <div class="offense-details">
-                    <div class="offense-meta">
-                        <div class="offense-date">June 12, 2023</div>
-                        <div class="offense-time">14:30 PM</div>
-                    </div>
-                    <div class="offense-location">Riverside Park, Greenville</div>
-                    <h3 class="offense-title">Construction Waste Dumping</h3>
-                    <p class="offense-desc">Approx. 2 tons of construction debris dumped in protected area.</p>
-                    <span class="status-badge status-reported">Reported</span>
-                </div>
-            </div>
-
-            <!-- Offense 2 -->
-            <div class="offense-card">
-                <img src=""
-                     alt="Illegal dump site" class="offense-img">
-                <div class="offense-details">
-                    <div class="offense-meta">
-                        <div class="offense-date">June 10, 2023</div>
-                        <div class="offense-time">09:15 AM</div>
-                    </div>
-                    <div class="offense-location">Industrial Area, Northside</div>
-                    <h3 class="offense-title">Electronic Waste Disposal</h3>
-                    <p class="offense-desc">Large quantity of electronic waste found near river.</p>
-                    <span class="status-badge status-cleaned">Cleaned</span>
-                </div>
-            </div>
-
-            <!-- Offense 3 -->
-            <div class="offense-card">
-                <img src=""
-                     alt="Illegal dump site" class="offense-img">
-                <div class="offense-details">
-                    <div class="offense-meta">
-                        <div class="offense-date">June 8, 2023</div>
-                        <div class="offense-time">18:45 PM</div>
-                    </div>
-                    <div class="offense-location">Forest Reserve, Oakwood</div>
-                    <h3 class="offense-title">Household Waste Dumping</h3>
-                    <p class="offense-desc">Household garbage dumped in forest area.</p>
-                    <span class="status-badge status-pending">Action Pending</span>
-                </div>
-            </div>
-
-            <!-- Offense 4 -->
-            <div class="offense-card">
-                <img src=""
-                     alt="Illegal dump site" class="offense-img">
-                <div class="offense-details">
-                    <div class="offense-meta">
-                        <div class="offense-date">June 5, 2023</div>
-                        <div class="offense-time">11:20 AM</div>
-                    </div>
-                    <div class="offense-location">Coastal Area, Seaside</div>
-                    <h3 class="offense-title">Plastic Waste on Beach</h3>
-                    <p class="offense-desc">Plastic bottles found on beach shoreline.</p>
-                    <span class="status-badge status-reported">Reported</span>
-                </div>
-            </div>
-
+        <div class="offense-location">
+            {% if event.camera %}
+                {{ event.camera.location }}
+            {% else %}
+                Unknown
+            {% endif %}
         </div>
-    </section>
+        <h3 class="offense-title">Illegal Dumping Event</h3>
+        <p class="offense-desc">Detected dumping by {{ event.actor|default:"Unknown" }}</p>
+        <span class="status-badge status-reported">Reported</span>
+    </div>
+</div>
+{% empty %}
+<p>No illegal dumping events recorded yet.</p>
+{% endfor %}
+
+</section>
+
+
+            
+
 
     <!-- Footer -->
     <footer id="about">

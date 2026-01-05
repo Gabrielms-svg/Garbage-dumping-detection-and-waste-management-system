@@ -26,7 +26,8 @@ W, H = int(cap.get(3)), int(cap.get(4))
 # ------------------ CONFIG ------------------
 
 CSV_FILE = "dumping_events.csv"
-EVIDENCE_DIR = "evidence"
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # login/
+EVIDENCE_DIR = os.path.join(BASE_DIR, "evidence")
 
 GROUND_RATIO = 0.55
 WASTE_PERSIST_TIME = 2.0

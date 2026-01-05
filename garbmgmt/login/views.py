@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate , login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 import re
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import *
 from django.http import JsonResponse
@@ -13,10 +14,13 @@ from .models import LegalDumpingLocation
 from django.views.decorators.http import require_http_methods
 import cv2
 from django.http import StreamingHttpResponse
+from .evidence_manager import sync_and_list_events
+from .models import DumpingEvent
 
 
 def home(request):
-    return render(request, 'home.html')
+    events = sync_and_list_events()
+    return render(request, 'home.html', {"events": events})
 
 
 def user_register(request):
@@ -222,3 +226,5 @@ def live_camera_feed(request):
         gen_frames(),
         content_type='multipart/x-mixed-replace; boundary=frame'
     )
+
+

@@ -95,3 +95,42 @@ class LegalDumpingLocation(models.Model):
     added_by = models.ForeignKey(Authority_user, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
+
+
+
+class Camera(models.Model):
+    camera_id = models.CharField(max_length=50, unique=True)
+    location = models.CharField(max_length=200)
+
+    def __str__(self):
+        return f"{self.camera_id} ({self.location})"
+
+
+
+class DumpingEvent(models.Model):
+    event_id = models.CharField(max_length=50, unique=True)
+    camera = models.ForeignKey(Camera, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField()
+    actor = models.CharField(max_length=50, blank=True)
+    dumping_video = models.FileField(upload_to="evidence/%Y/%m/%d/dumping/")
+    
+    # Add this line for location
+    location = models.ForeignKey(
+        LegalDumpingLocation,  # replace with your location model
+        on_delete=models.CASCADE,
+        null=True,             # optional, if some events may not have a location
+        blank=True
+    )
+    
+    def __str__(self):
+        return f"{self.event_id} - {self.camera.camera_id}"
+
+
+class NumberPlate(models.Model):
+    event = models.ForeignKey(DumpingEvent, on_delete=models.CASCADE, related_name="plates")
+    image = models.ImageField(upload_to="evidence/%Y/%m/%d/plates/")
+    timestamp = models.DateTimeField(auto_now_add=True)
+    plate_text = models.CharField(max_length=20, blank=True)  # optional if you want to store OCR results
+
+    def __str__(self):
+        return f"Plate {self.plate_text} for {self.event.event_id}"

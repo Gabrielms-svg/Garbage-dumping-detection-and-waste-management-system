@@ -396,6 +396,15 @@
             color: #d32f2f;
         }
     </style>
+
+    <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+
 </head>
 <body>
     <!-- Django Template Tag for CSRF Token -->
@@ -475,17 +484,13 @@
                 
                 <p>Find authorized garbage bins and recycling centers near you:</p>
                 
-                <div class="map-container">
-                    <div class="map-placeholder">
-                        <i class="fas fa-map"></i>
-                        <p>Interactive Map Integration</p>
-                        <p><small>Map would show here with markers for legal dumping sites</small></p>
-                    </div>
-                </div>
+                <div id="userMap" class="map-container"></div>
+
                 
-                <button class="btn btn-secondary">
-                    <i class="fas fa-location-arrow"></i> Use My Location
+                <button class="btn btn-secondary" onclick="useMyLocation()">
+                <i class="fas fa-location-arrow"></i> Use My Location
                 </button>
+
             </div>
             
             <!-- Waste Management Chatbot Card -->
@@ -576,107 +581,112 @@
     </footer>
 
     <script>
-        // Simple JavaScript for interactive elements
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                 const cookies = document.cookie.split(';');
-                    for (let cookie of cookies) {
-                         cookie = cookie.trim();
-                             if (cookie.startsWith(name + '=')) {
-                                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                                     break;
-                                 }
-                                 }
-                             }
-                             return cookieValue;
-                    }
-
-const csrftoken = getCookie('csrftoken');
-
-        // File upload area interaction
-        const uploadArea = document.querySelector('.upload-area');
-        const fileInput = document.getElementById('file-upload');
-        
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.style.borderColor = 'var(--primary-color)';
-            uploadArea.style.backgroundColor = '#f0f8ff';
-        });
-        
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.style.borderColor = '#ccc';
-            uploadArea.style.backgroundColor = '';
-        });
-        
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.style.borderColor = '#ccc';
-            uploadArea.style.backgroundColor = '';
-            fileInput.files = e.dataTransfer.files;
-            
-            // Show file count
-            if (fileInput.files.length > 0) {
-                uploadArea.innerHTML = `<i class="fas fa-check-circle"></i><p>${fileInput.files.length} file(s) selected</p>`;
+/* ================= CSRF ================= */
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
             }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie("csrftoken");
+
+/* ================= FILE UPLOAD ================= */
+const uploadArea = document.querySelector(".upload-area");
+const fileInput = document.getElementById("file-upload");
+
+uploadArea.addEventListener("dragover", e => {
+    e.preventDefault();
+    uploadArea.style.borderColor = "#2e7d32";
+});
+
+uploadArea.addEventListener("dragleave", () => {
+    uploadArea.style.borderColor = "#ccc";
+});
+
+uploadArea.addEventListener("drop", e => {
+    e.preventDefault();
+    fileInput.files = e.dataTransfer.files;
+    uploadArea.innerHTML = `<i class="fas fa-check-circle"></i>
+        <p>${fileInput.files.length} file(s) selected</p>`;
+});
+
+/* ================= CHATBOT ================= */
+const chatInput = document.querySelector(".chat-input input");
+const chatButton = document.querySelector(".chat-input button");
+const chatMessages = document.querySelector(".chat-messages");
+
+chatButton.addEventListener("click", sendMessage);
+chatInput.addEventListener("keypress", e => {
+    if (e.key === "Enter") sendMessage();
+});
+
+function sendMessage() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    chatMessages.innerHTML += `<div class="message user-message">${text}</div>`;
+    chatInput.value = "";
+
+    const formData = new FormData();
+    formData.append("message", text);
+
+    fetch("/chatbot/", {
+        method: "POST",
+        headers: { "X-CSRFToken": csrftoken },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        chatMessages.innerHTML += `<div class="message bot-message">${data.reply}</div>`;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    })
+    .catch(err => console.error("Chatbot Error:", err));
+}
+
+/* ================= LEAFLET MAP ================= */
+const map = L.map("userMap").setView([10.8505, 76.2711], 7);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors"
+}).addTo(map);
+
+const icons = {
+    bin: "🗑️",
+    recycling: "♻️",
+    transfer: "🚛",
+    hazardous: "☣️"
+};
+
+fetch("/get-locations/")
+    .then(res => res.json())
+    .then(locations => {
+        locations.forEach(loc => {
+            L.marker([loc.lat, loc.lng])
+                .addTo(map)
+                .bindPopup(`<strong>${icons[loc.type] || "📍"} ${loc.name}</strong><br>Type: ${loc.type}`);
         });
-        
+    })
+    .catch(err => console.error("Map Error:", err));
 
-   
+function useMyLocation() {
+    navigator.geolocation.getCurrentPosition(pos => {
+        const { latitude, longitude } = pos.coords;
+        map.setView([latitude, longitude], 14);
+        L.marker([latitude, longitude])
+            .addTo(map)
+            .bindPopup("📍 You are here")
+            .openPopup();
+    });
+}
+</script>
 
-        // Chatbot Elements
-const chatInput = document.querySelector('.chat-input input');
-const chatButton = document.querySelector('.chat-input button');
-const chatMessages = document.querySelector('.chat-messages');
-
-// Event listeners
-        chatButton.addEventListener('click', sendMessage);
-        chatInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') sendMessage();
-        });
-
-        function sendMessage() {
-             const messageText = chatInput.value.trim();
-             if (messageText === "") return;
-
-    // Add user message
-             chatMessages.innerHTML += `
-                 <div class="message user-message">${messageText}</div>
-                        `;
-                                chatInput.value = "";
-
-                 const formData = new FormData();
-                formData.append("message", messageText);
-
-                 fetch("/chatbot/", {
-                     method: "POST",
-                     headers: {
-                     "X-CSRFToken": csrftoken
-                    },
-                     body: formData
-                    })
-                .then(res => res.json())
-                .then(data => {
-                 chatMessages.innerHTML += `
-                    <div class="message bot-message">${data.reply}</div>
-                     `;
-                         chatMessages.scrollTop = chatMessages.scrollHeight;
-                    })
-                  .catch(err => console.error("Chatbot Error:", err));
-                }
-
-
-
-
-        
-        // Form submission simulation
-        const reportForm = document.querySelector('.report-form');
-        reportForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Report submitted successfully! Authorities will review your report.');
-            reportForm.reset();
-            uploadArea.innerHTML = `<i class="fas fa-cloud-upload-alt"></i><p>Click to upload evidence (images/videos)</p>`;
-        });
-    </script>
 </body>
 </html>
