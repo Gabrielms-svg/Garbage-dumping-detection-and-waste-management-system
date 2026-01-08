@@ -1,19 +1,10 @@
-Illegal Garbage Dump Detection & Waste Management System 
+Illegal Garbage Dump Detection & Waste Management System (Dump Surveillance AI)
 
 
-Abstract 
+Abstract
 
-Our project is a web application (Named, Dump Surveillance AI) which aims for Illegal 
-garbage dumping detection, analytics and waste management system. 
-An AI-powered system to detect and report illegal garbage dumping using CCTV feeds. It 
-employs YOLO object detection for identifying dumping activities, and uses clustering models 
-to derive dumping analytics which is then used for Google Maps API to generate maps which 
-visualises hotspots of illegal dumping areas for government authorities to take action, and 
-additionally, users can locate legal dumping sites near them. Users can report illegal dumping 
-activities through this platform media by uploading media, data and time, and location data of 
-the offences. The system also aids users on waste management using chatbot. Illegal waste 
-dumping is a major issue in India; this may be due to limited public access to legal disposal 
-sites and lack of offender accountability. As a result, waste often accumulates in unauthorised 
-and random places which leads to health and environmental risks from uncontrolled waste. 
-Manual monitoring is inefficient, this project aims to automate monitoring, government 
-authorities can make use of this web app to implement offender accountability. 
+Dump Surveillance AI is an AI-powered web application designed to detect, analyze, and manage illegal garbage dumping activities. 
+The system leverages CCTV surveillance feeds and advanced computer vision techniques to automatically identify illegal dumping incidents and support effective waste management.
+The application employs YOLO-based object detection to recognize dumping activities and extract vehicle number plates involved in the offense. Detected incidents are processed using clustering and analytical models to generate actionable insights. These insights are visualized on interactive maps using the Leaflet API, enabling authorities to identify and monitor illegal dumping hotspots efficiently.
+In addition to surveillance-based detection, the platform allows citizens to report illegal dumping by uploading media along with time, location, and incident details. Users can also locate authorized legal dumping sites nearby, promoting responsible waste disposal. To enhance public awareness, the system includes an AI-powered chatbot that provides guidance on proper waste management practices.
+Illegal waste dumping remains a significant environmental and public health challenge in India, primarily due to limited access to legal disposal facilities and inadequate offender accountability. Unregulated dumping leads to pollution, health hazards, and ecosystem degradation. Traditional manual monitoring methods are inefficient and resource-intensive. This project aims to automate surveillance and reporting, enabling government authorities to improve enforcement, ensure accountability, and promote cleaner and safer environments.
