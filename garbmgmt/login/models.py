@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager 
+from django.conf import settings
 
 # Create your models here.
 
@@ -137,3 +138,29 @@ class NumberPlate(models.Model):
         return f"Plate {self.plate_text} for {self.event.event_id}"
 
 
+
+#normal user garbage reporting
+class GarbageReport(models.Model):
+    user = models.ForeignKey(
+        Normal_user,
+        on_delete=models.CASCADE,
+        related_name="reports"
+    )
+    location = models.CharField(max_length=255)
+    description = models.TextField()
+    severity = models.CharField(max_length=10)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+#normal user garbage report storing
+class GarbageEvidence(models.Model):
+    report = models.ForeignKey(
+        GarbageReport,
+        on_delete=models.CASCADE,
+        related_name="evidences"
+    )
+    file = models.FileField(upload_to="user_reports/")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Evidence for Report #{self.report.id}"

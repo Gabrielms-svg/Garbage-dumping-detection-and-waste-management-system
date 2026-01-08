@@ -3,6 +3,7 @@ from django.contrib.auth.hashers import make_password,check_password
 from django.contrib.auth import authenticate , login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 import re
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -16,6 +17,9 @@ import cv2
 from django.http import StreamingHttpResponse
 from .evidence_manager import sync_and_list_events
 from .models import DumpingEvent
+from .models import GarbageReport, GarbageEvidence,Normal_user
+import zipfile
+import io
 
 
 def home(request):
@@ -228,3 +232,77 @@ def live_camera_feed(request):
     )
 
 
+
+
+
+
+@require_POST
+def submit_garbage_report(request):
+
+    user_id = request.session.get("normal_user_id")
+    if not user_id:
+        return JsonResponse({"error": "User not authenticated"}, status=401)
+
+    user = Normal_user.objects.get(id=user_id)
+
+    location = request.POST.get("location")
+    description = request.POST.get("description")
+    severity = request.POST.get("severity")
+    files = request.FILES.getlist("evidence")
+
+    if not location or not description or not severity:
+        return JsonResponse({"error": "All fields are required"}, status=400)
+
+    report = GarbageReport.objects.create(
+        user=user,
+        location=location,
+        description=description,
+        severity=severity
+    )
+
+    for f in files:
+        GarbageEvidence.objects.create(
+            report=report,
+            file=f
+        )
+
+    return JsonResponse({
+        "message": "Garbage report submitted successfully",
+        "report_id": report.id
+    })
+
+       
+
+def user_reports(request):
+    reports = GarbageReport.objects.prefetch_related("evidences").order_by("-created_at")
+
+    data = []
+    for r in reports:
+        data.append({
+            "id": r.id,
+            "reported_at": r.created_at.strftime("%Y-%m-%d %H:%M"),
+            "location": r.location,
+            "severity":r.severity,
+            "media": [e.file.url for e in r.evidences.all()]
+        })
+
+    return JsonResponse(data, safe=False)
+
+
+
+def download_report_zip(request, report_id):
+    report = GarbageReport.objects.get(id=report_id)
+
+    buffer = io.BytesIO()
+    zip_file = zipfile.ZipFile(buffer, 'w')
+
+    for ev in report.evidences.all():
+        zip_file.write(ev.file.path, arcname=ev.file.name.split("/")[-1])
+
+    zip_file.close()
+    buffer.seek(0)
+
+    response = HttpResponse(buffer, content_type="application/zip")
+    response["Content-Disposition"] = f'attachment; filename=report_{report.id}.zip'
+
+    return response

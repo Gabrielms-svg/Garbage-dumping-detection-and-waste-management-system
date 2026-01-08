@@ -820,43 +820,16 @@
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody>
-                <!-- {% for report in user_reports %} -->
-                <tr>
-                  <td>#USR-2025-041</td>
-                  <td>2025-01-06 14:22</td>
-                  <td>MG Road, Kochi</td>
-                  <td><i class="fas fa-image"></i> Photo</td>
-                  <td>
-                    <span class="status-badge status-pending">Pending</span>
-                  </td>
-                  <td>
-                    <div class="action-buttons">
-                      <button
-                        class="btn btn-small"
-                        onclick="viewUserReport('USR-2025-041')"
-                      >
-                        <i class="fas fa-eye"></i> View
-                      </button>
-                      <button
-                        class="btn btn-secondary btn-small"
-                        onclick="downloadUserEvidence('USR-2025-041')"
-                      >
-                        <i class="fas fa-download"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <!-- {% endfor %} -->
+              <tbody id="userReportsTable">
+                
+              
               </tbody>
             </table>
           </div>
 
-          <div class="download-options">
-            <button class="btn btn-secondary">
-              <i class="fas fa-download"></i> Download All User Reports
-            </button>
-          </div>
+        
+
+
         </div>
 
         <!-- Live Cameras Card -->
@@ -1662,6 +1635,120 @@
 
       // Map interaction simulation
       const mapContainer = document.querySelector(".map-container");
+      function loadUserReports() {
+  fetch("/authority/user-reports/")
+    .then(res => res.json())
+    .then(reports => {
+      const tbody = document.getElementById("userReportsTable");
+      tbody.innerHTML = "";
+
+      reports.forEach(r => {
+        const mediaIcons = r.media.length
+          ? r.media.map(url =>
+              `<img src="${url}" width="40"
+                style="cursor:pointer;margin-right:5px"
+                onclick="openMedia('${url}')">`
+            ).join("")
+          : "—";
+        tbody.innerHTML += `
+  <tr>
+    <td>#USR-${r.id}</td>
+    <td>${r.reported_at}</td>
+    <td>${r.location}</td>
+    <td>${mediaIcons}</td>
+    <td>
+      <span class="status-badge status-pending">${r.status}</span>
+    </td>
+    <td>
+      <button class="btn btn-small" onclick="viewUserReport(${r.id})">
+        <i class="fas fa-eye"></i> View
+      </button>
+
+      <a class="btn btn-secondary btn-small"
+         href="/authority/user-reports/${r.id}/download/">
+        <i class="fas fa-download"></i> ZIP
+      </a>
+    </td>
+  </tr>
+`;
+
+      });
+    })
+    .catch(err => console.error("User reports load error:", err));
+}
+
+document.addEventListener("DOMContentLoaded", loadUserReports);
+
+  
+function viewUserReport(reportId) {
+  fetch(`/authority/user-report/${reportId}/`)
+    .then(res => res.json())
+    .then(data => {
+      let html = "<h3>Evidence</h3>";
+      data.media.forEach(url => {
+        if (url.endsWith(".mp4")) {
+          html += `<video src="${url}" controls width="100%"></video>`;
+        } else {
+          html += `<img src="${url}" style="width:100%;margin-bottom:10px;">`;
+        }
+      });
+      alert("Open console for now"); // later replace with modal
+      console.log(html);
+    });
+}
+
+
+
+function openMedia(url) {
+  const modal = document.getElementById("mediaModal");
+  const content = document.getElementById("modalContent");
+
+  content.innerHTML = "";
+
+  if (url.match(/\.(mp4|webm|ogg)$/i)) {
+    content.innerHTML = `<video src="${url}" controls autoplay></video>`;
+  } else {
+    content.innerHTML = `<img src="${url}" />`;
+  }
+
+  modal.style.display = "flex";
+}
+
+function closeMediaModal() {
+  document.getElementById("mediaModal").style.display = "none";
+}
+
     </script>
+
+    <div id="mediaModal" class="modal">
+  <span class="close" onclick="closeMediaModal()">&times;</span>
+  <div id="modalContent"></div>
+</div>
+
+<style>
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+}
+.modal img, .modal video {
+  max-width: 90%;
+  max-height: 90%;
+  margin: auto;
+  display: block;
+}
+.close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+}
+</style>
+
+
   </body>
 </html>
